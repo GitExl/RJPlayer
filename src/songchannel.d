@@ -34,6 +34,7 @@ import audio.channel;
 import song.song;
 
 
+// Volume slide states.
 public enum SlideState : ubyte {
     TO_INTERMEDIATE,
     TO_FINAL,
@@ -41,12 +42,14 @@ public enum SlideState : ubyte {
     DONE
 }
 
+// Playback periods for each note.
 private immutable uint[] NOTE_PITCHES = [
     453, 480, 508, 538, 570, 604, 640, 678, 720, 762, 808, 856,
     226, 240, 254, 269, 285, 302, 320, 339, 360, 381, 404, 428,
     113, 120, 127, 135, 143, 151, 160, 170, 180, 190, 202, 214
 ];
 
+// Period to samplerate conversion scalars.
 private immutable float RATE_PAL = 7093789.2;
 private immutable float RATE_NTSC = 7159090.5;
 
@@ -89,7 +92,7 @@ public final class SongChannel {
 
     // Vibrato.
 	private uint _vibratoSample;
-	private uint _initialPitch;
+	private uint _initialPeriod;
 
     // Pitch slide.
     private float _pitchSlide = 0.0;
@@ -105,6 +108,7 @@ public final class SongChannel {
         _channel = channel;
     }
 
+    // Sets a new pattern on this channel.
     package void setPattern(const uint patternIndex) {
         Pattern[uint] patterns = _song.getPatterns();
         const uint offset = _song.getPatternOffset(patternIndex);
@@ -119,10 +123,12 @@ public final class SongChannel {
         _commandIndex = 0;
     }
 
+    // Sets a new volume slide on this channel.
     package void setSlide(const uint slideIndex, const SlideState state) {
         const VolumeSlide slide = _song.getVolumeSlide(slideIndex);
         _slideIndex = slideIndex;
         
+        // Set defaults for each volume slide state.
         switch (state) {
             case SlideState.TO_INTERMEDIATE:
                 if (slideIndex) {
@@ -170,6 +176,8 @@ public final class SongChannel {
         }
     }
 
+    // Sets a new sequence on this channel. Usually only called when a new
+    // subsong starts.
     package void setSequence(const uint sequenceIndex) {
         
         // Sequence 0 stops the channel.
@@ -194,6 +202,7 @@ public final class SongChannel {
         setPattern(sequences[offset].patternIndices[0]);
     }
 
+    // Updates this channel's state.
     package void update() {
 		_eventText.length = 0;
 
@@ -212,9 +221,10 @@ public final class SongChannel {
         updatePitch();
     }
 
+    // Updates the pitch (channel samplerate) of the current sample.
     private void updatePitch() {
         const Instrument instrument = _song.getInstrument(_instrumentIndex);
-        uint pitch = _initialPitch;
+        uint period = _initialPeriod;
 
         // Advance vibrato sample index and set new pitch.
 		if (instrument.vibratoLength > 2) {
@@ -223,21 +233,23 @@ public final class SongChannel {
 				_vibratoSample = instrument.vibratoLoopStart;
 			}
 			
-            // Calculate new pitch based on the initial note pitch and the vibrato sample data.
+            // Calculate new pitch based on the initial note pitch and the
+            // vibrato sample data.
 			const float vibrato = instrument.vibratoData[_vibratoSample];
-			pitch = cast(uint)(_initialPitch * (1.0 - vibrato));
+			period = cast(uint)(_initialPeriod * (1.0 - vibrato));
 		}
 
         // Update pitch slide accumulator.
         if (_pitchSlideDuration) {
             _pitchSlideAccumulator += _pitchSlide;
-            pitch += cast(uint)_pitchSlideAccumulator;
+            period += cast(uint)_pitchSlideAccumulator;
             _pitchSlideDuration -= 1;
         }
 
-        _channel.setSampleRate(getSampleRateForPitch(pitch));
+        _channel.setSampleRate(getSampleRateForPeriod(period));
     }
 
+    // Updates the channel volume of the current sample.
     private void updateVolume() {
         const Instrument instrument = _song.getInstrument(_instrumentIndex);
 
@@ -270,6 +282,8 @@ public final class SongChannel {
 		_channel.volume = max(0.0, min(_channel.volume, 1.0));
     }
 
+    // Executes a pattern's commands until the event is considered done.
+    // An event being done is determined by the last command, see eventEnd = true.
     package void executeEvent() {
         bool eventEnd = false;
 
@@ -288,19 +302,19 @@ public final class SongChannel {
                     _speed = command.parameter1;
                     break;
 
-                // Set event delay.
+                // Set next event delay.
                 case CommandType.SET_DELAY:
                     _eventText ~= format("DELAY %d", command.parameter1);
                     _delay = command.parameter1;
                     break;
 
-                // Set channel master volume.
+                // Set master volume.
                 case CommandType.SET_VOLUME:
                     _eventText ~= format("VOLUME %d", command.parameter1);
                     _masterVolume = command.parameter1 / 64.0;
                     break;
 
-                // Set channel instrument.
+                // Set instrument.
                 case CommandType.SET_INSTRUMENT:
                     _eventText ~= format("INSTR %d", command.parameter1);
                     setInstrument(command.parameter1);
@@ -321,13 +335,13 @@ public final class SongChannel {
                     _pitchSlide = command.parameter2;
                     break;
 
-                // End this pattern (but not necessarily this event).
+                // End this pattern (but not necessarily this event!).
                 case CommandType.PATTERN_END:
                     _eventText ~= "PATTERN END";
                     eventEnd = endPattern();
                     break;
 
-                // End this event, fading out.
+                // End this event whilst fading out.
                 case CommandType.EVENT_END_FADE:
                     _eventText ~= "EVENT END";
                     setSlide(_slideIndex, SlideState.TO_ZERO);
@@ -346,7 +360,10 @@ public final class SongChannel {
         }
     }
 
+    // Sets the current isntrument.
     private void setInstrument(const ubyte instrumentIndex) {
+
+        // Setting instrument 0 or the same instrument as is currently set does nothing.
         if (instrumentIndex != 0 && instrumentIndex != _instrumentIndex) {
             const Instrument instrument = _song.getInstrument(instrumentIndex);
             _masterVolume = instrument.volume;
@@ -356,37 +373,41 @@ public final class SongChannel {
 		    _tremoloVolume = 1.0;
             _vibratoSample = 0;
         }
+
         _instrumentIndex = instrumentIndex;
     }
 
+    // Plays a note using the current instrument.
     private void playNote(const ubyte note) {
         _channel.stop();
 
+        // Zero length instruments do nothing.
         const Instrument instrument = _song.getInstrument(_instrumentIndex);
         if (instrument.initialLength <= 2) {
             return;
         }
 		
-        _initialPitch = NOTE_PITCHES[note];
-        _channel.setSampleData(_song.getInstrumentSampleData(_instrumentIndex), getSampleRateForPitch(_initialPitch));
+        _initialPeriod = NOTE_PITCHES[note];
+        _channel.setSampleData(_song.getInstrumentSampleData(_instrumentIndex), getSampleRateForPeriod(_initialPeriod));
         if (instrument.sampleLoopLength > 2) {
             _channel.setLoop(instrument.sampleLoopStart, instrument.sampleLoopStart + instrument.sampleLoopLength);
         }
         if (instrument.initialOffset > 0) {
             _channel.position = instrument.initialOffset;
         }
-
         setSlide(instrument.volumeSlideIndex, SlideState.TO_INTERMEDIATE);
 
         _channel.play();
     }
 
+    // Ends this pattern. Advances to the next pattern in the current sequence, or
+    // does something else if the sequence has ended.
     private bool endPattern() {
 
         // Advance to next pattern.
         _sequencePatternIndex += 1;
 
-        // End of sequence is reached.
+        // End of sequence is reached, do something else.
         const Sequence sequence = _song.getSequence(_sequenceOffset);
         if (_sequencePatternIndex >= sequence.patternIndices.length) {
             _eventText ~= "SEQUENCE END";
@@ -396,12 +417,12 @@ public final class SongChannel {
                 _eventText ~= format("REVERT %d", sequence.loopBack);
                 _sequencePatternIndex -= sequence.loopBack;
 
-            // Start a next sequence.
+            // Start another sequence.
             } else if (sequence.nextSequence) {
                 _eventText ~= format("GOTO %d", sequence.nextSequence);
                 setSequence(_song.sequenceOffsetToIndex(sequence.nextSequence));
 
-            // Stop playback on this channel.
+            // Stop playback.
             } else {
                 _eventText ~= "STOP";
                 _active = false;
@@ -415,10 +436,12 @@ public final class SongChannel {
         return false;
     }
 
-	private uint getSampleRateForPitch(const uint pitch) {
-		return cast(uint)(RATE_PAL / (pitch * 2));
+    // Returns the samplerate required to play back a note at a certain period.
+	private uint getSampleRateForPeriod(const uint period) {
+		return cast(uint)(RATE_PAL / (period * 2));
 	}
 
+    // Returns the text of events that occured in the last update.
     package string[] getEventText() {
         return _eventText;
     }

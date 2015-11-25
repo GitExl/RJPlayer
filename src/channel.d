@@ -36,6 +36,7 @@ public enum OutputChannel : uint {
     RIGHT = 1,
 }
 
+
 public final class Channel {
     private OutputChannel _outputChannel;
     

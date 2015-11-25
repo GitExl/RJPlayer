@@ -117,6 +117,7 @@ public final class SongPlayer {
         _timeIndex += UPDATE_INTERVAL;
         uint stopped = 0;
 
+        // Update each active song channel.
         uint maxTextLines = 0;
         foreach (int index, SongChannel songChannel; _songChannels) {
             if (!songChannel.active) {
@@ -129,11 +130,12 @@ public final class SongPlayer {
         }
 
         // Detect some song endings if no more channels are active.
+        // Only works for a few songs that use all 4 channels and fully stop all of them.
         if (stopped == _songChannels.length) {
             _playing = false;
         }
 
-        // Output gathered event commands formatted into columns.
+        // Output gathered event commands, formatted into columns.
         if (maxTextLines && _outputCommands) {
             string[][4] eventText;
             eventText[0] = _songChannels[0].getEventText();

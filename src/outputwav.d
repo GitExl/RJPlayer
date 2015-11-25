@@ -62,7 +62,7 @@ public final class AudioOutputWAV : AudioOutput {
     private AudioBufferFillFunc _callbackFunc;
 
 
-    public this(string fileName, const uint channelCount, const uint sampleRate) {
+    public this(const string fileName, const uint channelCount, const uint sampleRate) {
         _sampleRate = sampleRate;
         _channelCount = channelCount;
 
@@ -70,6 +70,7 @@ public final class AudioOutputWAV : AudioOutput {
 
         _writer = new RIFFWriter(fileName);
 
+        // Write header.
         WAVFormat format;
         format.type = WAVFormatType.WAVE_FORMAT_IEEE_FLOAT;
         format.channelCount = cast(ushort)channelCount;
@@ -80,12 +81,12 @@ public final class AudioOutputWAV : AudioOutput {
 
         _writer.writeList("WAVE");
 
-        // Format.
+        // Write format.
         _fp = _writer.writeChunk("fmt ");
         _fp.rawWrite(cast(ubyte[format.sizeof])format);
         _writer.finishChunk();
 
-        // Data start.
+        // Write start of data.
         _fp = _writer.writeChunk("data");
     }
 

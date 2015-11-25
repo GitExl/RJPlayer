@@ -37,6 +37,7 @@ public final class SongReader {
     private string _songFileName;
     private string _sampleFileName;
 
+
     public this(const string songFileName, const string sampleFileName) {
         _songFileName = songFileName;
         _sampleFileName = sampleFileName;
@@ -206,6 +207,7 @@ public final class SongReader {
         foreach (uint offset; sequenceOffsets) {
             songFile.seek(start + offset);
 
+            // Each sequence contains a list of patterns.
             Sequence sequence;
             while (1) {
                 immutable ubyte pattern = songFile.readUByte();
@@ -215,6 +217,7 @@ public final class SongReader {
                 sequence.patternIndices ~= pattern;
             }
 
+            // Read what to do after the sequence's last pattern has played.
             immutable ubyte postAction = songFile.readUByte();
             if (postAction == 1) {
                 throw new Exception("Invalid sequence post action byte.");
@@ -242,21 +245,25 @@ public final class SongReader {
                 continue;
             }
 
+            // Read pattern commands.
             songFile.seek(start + offset);
             Pattern pattern;
             while (1) {
                 Command cmd;
                 immutable ubyte type = songFile.readUByte();
 
+                // Read note commands.
                 if (type < 0x80) {
                     cmd.type = CommandType.NOTE;
                     cmd.parameter1 = type / 2;
 
+                // Read other command types.
                 } else {
                     if (type > 0x87) {
                         throw new Exception(format("Unknown pattern command 0x%X.", type));
                     }
 
+                    // Read command parameters.
                     cmd.type = cast(CommandType)type;
                     if (cmd.type == CommandType.SET_SPEED || cmd.type == CommandType.SET_DELAY ||
                         cmd.type == CommandType.SET_INSTRUMENT || cmd.type == CommandType.SET_VOLUME ||

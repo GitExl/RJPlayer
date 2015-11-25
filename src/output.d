@@ -25,12 +25,15 @@
 
 module audio.output;
 
+
 public alias void delegate(float[] buffer) AudioBufferFillFunc;
+
 
 public interface AudioOutput {
     public void destroy();
     public void setBufferFillCallback(AudioBufferFillFunc func);
     public void fill(float[] output);
+
     @property public uint channelCount();
     @property public uint sampleRate();
     @property public uint bufferSize();

@@ -35,8 +35,10 @@ import derelict.sdl2.sdl;
 import audio.output;
 
 
+// This callback is called by SDL when more audio is required.
 extern(C) void audioOutputSDLCallback(void *userData, ubyte* data, int length) nothrow {
     try {
+        // Get the class instance from the user data pointer.
         AudioOutputSDL output = cast(AudioOutputSDL)userData;
         output.fill(cast(float[])data[0..length]);
     } catch (Exception e) {
@@ -45,21 +47,22 @@ extern(C) void audioOutputSDLCallback(void *userData, ubyte* data, int length) n
 }
 
 
-class AudioOutputSDL : AudioOutput {
+public final class AudioOutputSDL : AudioOutput {
     private uint _sampleRate;
     private uint _bufferSize;
     private uint _channelCount;
 
     private AudioBufferFillFunc _callbackFunc;
 
+
     public this(const uint channelCount, const uint sampleRate, const uint bufferSize) {
         if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
             throw new Exception(format("Could not initialize SDL audio subsystem. SDL error %s.", SDL_GetError()));
         }
 
+        // Try to get an audio output specification.
         SDL_AudioSpec desired;
         SDL_AudioSpec obtained;
-
         desired.freq = sampleRate;
         desired.format = AUDIO_F32SYS;
         desired.channels = cast(ubyte)channelCount;

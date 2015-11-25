@@ -46,8 +46,8 @@ import text.license;
 
 private immutable string NAME = "RJPlayer";
 
-private immutable ubyte VERSION_MAJOR = 0;
-private immutable ubyte VERSION_MINOR = 9;
+private immutable ubyte VERSION_MAJOR = 1;
+private immutable ubyte VERSION_MINOR = 0;
 private immutable ubyte VERSION_PATCH = 0;
 
 
@@ -89,6 +89,7 @@ int main(string[] argv) {
         "silent",              &options.silent
     );
 
+    // Validate basic input.
     if (!exists(options.inputSong)) {
         writeln("A valid input song filename is required.");
         return -1;
@@ -99,6 +100,7 @@ int main(string[] argv) {
         return -1;
     }
 
+    // Attempt to read the song.
     SongReader songReader = new SongReader(options.inputSong, options.inputSamples);
     Song song = songReader.read();
 
@@ -137,6 +139,7 @@ int main(string[] argv) {
         player.outputCommands = false;
         player.playSubSong(options.subSong);
 
+        // Write data until either the song stops or the maximum duration elapses.
         while (player.playing && player.timeIndex < options.duration) {
             output.write();
         }
@@ -162,6 +165,7 @@ int main(string[] argv) {
         player.outputCommands = !options.silent;
         player.playSubSong(options.subSong);
 
+        // Play forever. CTRL+C to stop (sadly, without cleanup).
         while (player.playing) {
             if (options.duration !is float.nan && player.timeIndex >= options.duration) {
                 break;

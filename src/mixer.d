@@ -39,7 +39,7 @@ import audio.output;
 public alias void delegate(Mixer mixer) MixerCallbackFunc;
 
 
-class Mixer {
+public final class Mixer {
     private AudioOutput _output;
 
     private float _volume = 1.0;
@@ -63,6 +63,8 @@ class Mixer {
         _output.setBufferFillCallback(null);
     }
 
+    // Sets the callback to call when an amount of time has passed. The amount of time is
+    // converted to a number of samples.
     public void setUpdateCallback(MixerCallbackFunc callback, const float interval) {
         _callback = callback;
         _callbackInterval = cast(uint)ceil(_output.sampleRate * interval);
@@ -73,6 +75,7 @@ class Mixer {
         }
     }
 
+    // Mixes all active channels into a single output buffer.
     public void mix(float[] output) {
         output[] = 0.0;
 

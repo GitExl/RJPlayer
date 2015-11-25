@@ -35,6 +35,7 @@ import song.song;
 public final class SongDumper {
     private Song _song;
 
+
     public this(Song song) {
         _song = song;
     }
