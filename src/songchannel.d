@@ -70,7 +70,7 @@ public final class SongChannel {
 
     // Channel volume.
     private float _masterVolume = 0.0;
-    
+
     // Delay between events.
     private ubyte _speed = 6;
     private ubyte _delay = 1;
@@ -86,13 +86,13 @@ public final class SongChannel {
     private ubyte _slideDuration = 0;
     private SlideState _slideState = SlideState.DONE;
 
-	// Tremolo.
+    // Tremolo.
     private uint _tremoloSample;
-	private float _tremoloVolume = 1.0;
+    private float _tremoloVolume = 1.0;
 
     // Vibrato.
-	private uint _vibratoSample;
-	private uint _initialPeriod;
+    private uint _vibratoSample;
+    private uint _initialPeriod;
 
     // Pitch slide.
     private float _pitchSlide = 0.0;
@@ -117,7 +117,7 @@ public final class SongChannel {
         if (offset !in patterns) {
             throw new Exception(format("Invalid pattern 0x%04X.", offset));
         }
-        
+
         // Start new pattern from command 0.
         _patternOffset = offset;
         _commandIndex = 0;
@@ -127,7 +127,7 @@ public final class SongChannel {
     package void setSlide(const uint slideIndex, const SlideState state) {
         const VolumeSlide slide = _song.getVolumeSlide(slideIndex);
         _slideIndex = slideIndex;
-        
+
         // Set defaults for each volume slide state.
         switch (state) {
             case SlideState.TO_INTERMEDIATE:
@@ -179,7 +179,7 @@ public final class SongChannel {
     // Sets a new sequence on this channel. Usually only called when a new
     // subsong starts.
     package void setSequence(const uint sequenceIndex) {
-        
+
         // Sequence 0 stops the channel.
         if (sequenceIndex == 0) {
             _active = false;
@@ -188,7 +188,7 @@ public final class SongChannel {
 
         Sequence[uint] sequences = _song.getSequences();
         const uint offset = _song.getSequenceOffset(sequenceIndex);
-        
+
         // Invalid sequence.
         if (offset !in sequences) {
             throw new Exception(format("Invalid sequence 0x%04X.", offset));
@@ -204,7 +204,7 @@ public final class SongChannel {
 
     // Updates this channel's state.
     package void update() {
-		_eventText.length = 0;
+        _eventText.length = 0;
 
         // Advance counters until an event needs to run.
         _speedCounter -= 1;
@@ -227,17 +227,17 @@ public final class SongChannel {
         uint period = _initialPeriod;
 
         // Advance vibrato sample index and set new pitch.
-		if (instrument.vibratoLength > 2) {
-			_vibratoSample += 1;
-			if (_vibratoSample >= instrument.vibratoData.length) {
-				_vibratoSample = instrument.vibratoLoopStart;
-			}
-			
+        if (instrument.vibratoLength > 2) {
+            _vibratoSample += 1;
+            if (_vibratoSample >= instrument.vibratoData.length) {
+                _vibratoSample = instrument.vibratoLoopStart;
+            }
+
             // Calculate new pitch based on the initial note pitch and the
             // vibrato sample data.
-			const float vibrato = instrument.vibratoData[_vibratoSample];
-			period = cast(uint)(_initialPeriod * (1.0 - vibrato));
-		}
+            const float vibrato = instrument.vibratoData[_vibratoSample];
+            period = cast(uint)(_initialPeriod * (1.0 - vibrato));
+        }
 
         // Update pitch slide accumulator.
         if (_pitchSlideDuration) {
@@ -268,18 +268,18 @@ public final class SongChannel {
             }
         }
 
-		// Advance tremolo sample index.
-		if (instrument.tremoloLength > 2) {
-			_tremoloSample += 1;
-			if (_tremoloSample >= instrument.tremoloData.length) {
-				_tremoloSample = instrument.tremoloLoopStart;
-			}
-			_tremoloVolume += _tremoloVolume * instrument.tremoloData[_tremoloSample];
-		}
+        // Advance tremolo sample index.
+        if (instrument.tremoloLength > 2) {
+            _tremoloSample += 1;
+            if (_tremoloSample >= instrument.tremoloData.length) {
+                _tremoloSample = instrument.tremoloLoopStart;
+            }
+            _tremoloVolume += _tremoloVolume * instrument.tremoloData[_tremoloSample];
+        }
 
         // Apply calculated volume to output audio channel.
         _channel.volume = _slideVolume * _tremoloVolume * _masterVolume;
-		_channel.volume = max(0.0, min(_channel.volume, 1.0));
+        _channel.volume = max(0.0, min(_channel.volume, 1.0));
     }
 
     // Executes a pattern's commands until the event is considered done.
@@ -293,7 +293,7 @@ public final class SongChannel {
         while (!eventEnd) {
             const Pattern pattern = _song.getPattern(_patternOffset);
             const Command command = pattern.commands[_commandIndex++];
-            
+
             switch (command.type) {
 
                 // Set playback speed.
@@ -327,7 +327,7 @@ public final class SongChannel {
                     eventEnd = true;
                     break;
 
-				// Start a pitch slide.
+                // Start a pitch slide.
                 case CommandType.PITCH_SLIDE:
                     _eventText ~= format("PSLIDE %d %.1f", command.parameter1, command.parameter2);
                     _pitchSlideDuration = command.parameter1;
@@ -370,7 +370,7 @@ public final class SongChannel {
 
             // Reset tremolo and vibrato.
             _tremoloSample = 0;
-		    _tremoloVolume = 1.0;
+            _tremoloVolume = 1.0;
             _vibratoSample = 0;
         }
 
@@ -386,7 +386,7 @@ public final class SongChannel {
         if (instrument.initialLength <= 2) {
             return;
         }
-		
+
         _initialPeriod = NOTE_PITCHES[note];
         _channel.setSampleData(_song.getInstrumentSampleData(_instrumentIndex), getSampleRateForPeriod(_initialPeriod));
         if (instrument.sampleLoopLength > 2) {
@@ -437,9 +437,9 @@ public final class SongChannel {
     }
 
     // Returns the samplerate required to play back a note at a certain period.
-	private uint getSampleRateForPeriod(const uint period) {
-		return cast(uint)(RATE_PAL / (period * 2));
-	}
+    private uint getSampleRateForPeriod(const uint period) {
+      return cast(uint)(RATE_PAL / (period * 2));
+    }
 
     // Returns the text of events that occured in the last update.
     package string[] getEventText() {

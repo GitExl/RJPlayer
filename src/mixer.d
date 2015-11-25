@@ -95,7 +95,7 @@ public final class Mixer {
                 if (!channel.active) {
                     continue;
                 }
-                
+
                 // Mix channel sample into each output channel.
                 const float sample = channel.getCurrentSample();
                 for (uint outputChannel = 0; outputChannel < _output.channelCount; outputChannel++) {

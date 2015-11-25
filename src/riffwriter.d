@@ -65,7 +65,7 @@ public final class RIFFWriter {
         ubyte[] size = [0, 0, 0, 0];
         size.write!(uint, Endian.littleEndian)(partialSize, 0);
         _fp.rawWrite(size);
-        
+
         // Seek to end of chunk data.
         _fp.seek(_partialStart + partialSize);
 

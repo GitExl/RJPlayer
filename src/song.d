@@ -169,7 +169,7 @@ public final class Song {
 
     package uint getSequenceOffset(const uint index) {
         if (index >= _sequenceOffsets.length) {
-			writefln("Sequence index %d is out of range. Returning 0.", index);
+            writefln("Sequence index %d is out of range. Returning 0.", index);
             return 0;
         }
 

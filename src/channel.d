@@ -39,12 +39,12 @@ public enum OutputChannel : uint {
 
 public final class Channel {
     private OutputChannel _outputChannel;
-    
+
     private float[] _data;
     private float _position = 0.0;
     private float _step = 1.0;
     private uint _outputSampleRate;
-    
+
     private float _volume = 1.0;
 
     private uint _loopStart;
@@ -69,7 +69,7 @@ public final class Channel {
             _position = 0;
             _active = false;
         }
-        
+
         return sample;
     }
 
@@ -113,9 +113,9 @@ public final class Channel {
         _active = false;
     }
 
-	public void setSampleRate(const uint sampleRate) {
-		_step = cast(float)sampleRate / _outputSampleRate;
-	}
+    public void setSampleRate(const uint sampleRate) {
+        _step = cast(float)sampleRate / _outputSampleRate;
+    }
 
     @property
     public void volume(const float volume) {

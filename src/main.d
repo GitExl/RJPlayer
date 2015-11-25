@@ -112,14 +112,14 @@ int main(string[] argv) {
     // Dump song data.
     if (options.dump) {
         SongDumper dumper = new SongDumper(song);
-        
+
         writeln();
         dumper.dumpInstruments();
         dumper.dumpVolumeSlides();
         dumper.dumpSubSongs();
         dumper.dumpSequences();
         dumper.dumpPatterns();
-    
+
     // Write WAV file.
     } else if (options.wav != "") {
         writefln("Writing subsong %d to %s for %.1f seconds.", options.subSong, options.wav, options.duration);
@@ -145,7 +145,7 @@ int main(string[] argv) {
         }
         player.destroy();
         output.destroy();
-    
+
     // Audio playback.
     } else {
         DerelictSDL2.load();
@@ -154,7 +154,7 @@ int main(string[] argv) {
         if (options.duration !is float.nan) {
             writefln("Stopping playback after %.1f seconds.", options.duration);
         }
-    
+
         AudioOutputSDL output = new AudioOutputSDL(2, options.sampleRate, cast(uint)(options.sampleRate * 0.04));
 
         Mixer mixer = new Mixer(output);

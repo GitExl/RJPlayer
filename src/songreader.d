@@ -80,7 +80,7 @@ public final class SongReader {
         Song song = new Song();
         song.setHeader(header);
         song.setInstruments(readInstruments(songFile, sampleFile));
-        song.setVolumeSlides(readVolumeSlides(songFile));        
+        song.setVolumeSlides(readVolumeSlides(songFile));
         song.setSubSongs(readSubSongs(songFile));
         uint[] sequenceOffsets = readSequenceOffsets(songFile);
         song.setSequenceOffsets(sequenceOffsets);

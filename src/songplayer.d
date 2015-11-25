@@ -42,10 +42,10 @@ private immutable float UPDATE_INTERVAL = 1.0 / 50;
 public final class SongPlayer {
     private Song _song;
     private SongChannel[4] _songChannels;
-    
+
     private Mixer _mixer;
     private Channel[4] _channels;
-    
+
     private bool _playing = false;
     private float _timeIndex = 0.0;
     private bool _outputCommands = false;
@@ -112,7 +112,7 @@ public final class SongPlayer {
         _playing = false;
     }
 
-    
+
     public void update() {
         _timeIndex += UPDATE_INTERVAL;
         uint stopped = 0;
