@@ -45,7 +45,10 @@ public final class SongDumper {
         writeln("-----------");
         writeln("#    Size    Ilen   Ioffs  Vol       Loop   Loop len  Sld  Vib    Tre");
         foreach (uint index, ref Instrument ins; _song.getInstruments()) {
-            writefln("%-3d  %-6d  %-5d  %-5d  %-8f  %-5d  %-8d  %-3d  %-5d  %d", index, ins.sampleData.length, ins.initialLength, ins.initialOffset, ins.volume, ins.sampleLoopStart, ins.sampleLoopLength, ins.volumeSlideIndex, ins.vibratoData.length, ins.tremoloData.length);
+            writefln("%-3d  %-6d  %-5d  %-5d  %-8f  %-5d  %-8d  %-3d  %-5d  %d",
+                     index, ins.sampleData.length, ins.initialLength, ins.initialOffset, ins.volume,
+                     ins.sampleLoopStart, ins.sampleLoopLength, ins.volumeSlideIndex, ins.vibratoData.length,
+                     ins.tremoloData.length);
         }
         writeln("");
     }
@@ -55,7 +58,9 @@ public final class SongDumper {
         writeln("-------------");
         writeln("#   Vol 1     Dur 1-2  Vol 2     Dur 2-3  Vol 3     Dur 0");
         foreach (uint index, ref VolumeSlide slide; _song.getVolumeSlides()) {
-            writefln("%-2d  %-8f  %-7d  %-8f  %-7d  %-8f  %-5d", index, slide.initialVolume, slide.toIntermediateDuration, slide.intermediateVolume, slide.toFinalDuration, slide.finalVolume, slide.toZeroDuration);
+            writefln("%-2d  %-8f  %-7d  %-8f  %-7d  %-8f  %-5d", index, slide.initialVolume,
+                     slide.toIntermediateDuration, slide.intermediateVolume, slide.toFinalDuration,
+                     slide.finalVolume, slide.toZeroDuration);
         }
         writeln("");
     }
@@ -65,7 +70,8 @@ public final class SongDumper {
         writeln("--------");
         writeln("#   Seq 1  Seq 2  Seq 3  Seq 4");
         foreach (uint index, ref SubSong subSong; _song.getSubSongs()) {
-            writefln("%-2d  %5d  %5d  %5d  %5d", index, subSong.sequences[0], subSong.sequences[1], subSong.sequences[2], subSong.sequences[3]);
+            writefln("%-2d  %5d  %5d  %5d  %5d", index, subSong.sequences[0], subSong.sequences[1],
+                     subSong.sequences[2], subSong.sequences[3]);
         }
         writeln("");
     }

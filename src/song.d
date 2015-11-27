@@ -219,10 +219,6 @@ public final class Song {
         return _sequences[offset];
     }
 
-    package float[] getInstrumentSampleData(const uint index) {
-        return _instruments[index].sampleData;
-    }
-
     package VolumeSlide getVolumeSlide(const uint index) {
         return _volumeSlides[index];
     }

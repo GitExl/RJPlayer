@@ -42,7 +42,8 @@ extern(C) void audioOutputSDLCallback(void *userData, ubyte* data, int length) n
         AudioOutputSDL output = cast(AudioOutputSDL)userData;
         output.fill(cast(float[])data[0..length]);
     } catch (Exception e) {
-        printf("An exception occured in the SDL audio output callback. File %s, line %d: %s\n", toStringz(e.file), e.line, toStringz(e.msg));
+        printf("An exception occured in the SDL audio output callback. File %s, line %d: %s\n",
+               toStringz(e.file), e.line, toStringz(e.msg));
     }
 }
 
@@ -75,10 +76,12 @@ public final class AudioOutputSDL : AudioOutput {
         }
 
         if (obtained.channels != channelCount) {
-            throw new Exception(format("Could not obtain %d channels, only got %d.", channelCount, obtained.channels));
+            throw new Exception(format("Could not obtain %d channels, only got %d.",
+                                       channelCount, obtained.channels));
         }
 
-        writefln("Sound output initialized at %d Hz, %d channels and %d samples in buffer.", obtained.freq, obtained.channels, obtained.samples);
+        writefln("Sound output initialized at %d Hz, %d channels and %d samples in buffer.",
+                 obtained.freq, obtained.channels, obtained.samples);
 
         _channelCount = obtained.channels;
         _sampleRate = obtained.freq;

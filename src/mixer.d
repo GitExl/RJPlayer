@@ -101,8 +101,9 @@ public final class Mixer {
                 for (uint outputChannel = 0; outputChannel < _output.channelCount; outputChannel++) {
 
                     // Modify sample volume with stereo separation.
-                    const float attenuation = (_output.channelCount == 2 && channel.outputChannel == outputChannel) ? 1.0 - _stereoSeparation : 1.0;
-                    output[bufferIndex * _output.channelCount + outputChannel] += (sample * attenuation) / _channels.length;
+                    const float volume = (_output.channelCount == 2 && channel.outputChannel == outputChannel) ?
+                        1.0 - _stereoSeparation : 1.0;
+                    output[bufferIndex * _output.channelCount + outputChannel] += (sample * volume) / _channels.length;
                 }
             }
         }
