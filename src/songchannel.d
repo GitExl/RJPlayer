@@ -49,9 +49,9 @@ private immutable uint[] NOTE_PITCHES = [
     113, 120, 127, 135, 143, 151, 160, 170, 180, 190, 202, 214
 ];
 
-// Period to samplerate conversion scalars.
-private immutable float RATE_PAL = 7093789.2;
-private immutable float RATE_NTSC = 7159090.5;
+// CPU clock speeds (A500).
+private immutable float CPU_PAL = 7093789.2;
+private immutable float CPU_NTSC = 7159090.5;
 
 
 public final class SongChannel {
@@ -388,7 +388,7 @@ public final class SongChannel {
         }
 
         _initialPeriod = NOTE_PITCHES[note];
-        _channel.setSampleData(_song.getInstrumentSampleData(_instrumentIndex), getSampleRateForPeriod(_initialPeriod));
+        _channel.setSampleData(cast(float[])instrument.sampleData, getSampleRateForPeriod(_initialPeriod));
         if (instrument.sampleLoopLength > 2) {
             _channel.setLoop(instrument.sampleLoopStart, instrument.sampleLoopStart + instrument.sampleLoopLength);
         }
@@ -437,8 +437,9 @@ public final class SongChannel {
     }
 
     // Returns the samplerate required to play back a note at a certain period.
+    // The Paula audio chip runs at half the CPU clock speed, so calculate the number of samples per period.
     private uint getSampleRateForPeriod(const uint period) {
-      return cast(uint)(RATE_PAL / (period * 2));
+      return cast(uint)(CPU_PAL / (period * 2));
     }
 
     // Returns the text of events that occured in the last update.
