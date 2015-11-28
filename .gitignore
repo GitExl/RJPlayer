@@ -235,3 +235,4 @@ music
 *.dll
 *.exe
 *.exe_cv
+.dub

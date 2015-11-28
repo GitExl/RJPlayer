@@ -1,0 +1,11 @@
+{
+	"name": "RJPlayer",
+	"description": "Plays Amiga Richard Joseph music files.",
+	"copyright": "Copyright (c) 2015, Dennis Meuwissen. All rights reserved.",
+  "license": "BSD 2-clause",
+	"authors": ["Dennis Meuwissen"],
+  "buildOptions": ["releaseMode", "inline", "optimize", "warnings", "warningsAsErrors", "deprecationErrors"],
+	"dependencies": {
+    "derelict-sdl2": "~>1.9"
+	}
+}

@@ -206,27 +206,27 @@
  </Config>
  <Folder name="RJPlayer">
   <Folder name="audio">
-   <File path="src\channel.d" />
-   <File path="src\mixer.d" />
-   <File path="src\output.d" />
-   <File path="src\outputsdl.d" />
-   <File path="src\outputwav.d" />
+   <File path="source\channel.d" />
+   <File path="source\mixer.d" />
+   <File path="source\output.d" />
+   <File path="source\outputsdl.d" />
+   <File path="source\outputwav.d" />
   </Folder>
   <Folder name="text">
-   <File path="src\help.d" />
-   <File path="src\license.d" />
+   <File path="source\help.d" />
+   <File path="source\license.d" />
   </Folder>
   <Folder name="song">
-   <File path="src\song.d" />
-   <File path="src\songchannel.d" />
-   <File path="src\songdumper.d" />
-   <File path="src\songplayer.d" />
-   <File path="src\songreader.d" />
+   <File path="source\song.d" />
+   <File path="source\songchannel.d" />
+   <File path="source\songdumper.d" />
+   <File path="source\songplayer.d" />
+   <File path="source\songreader.d" />
   </Folder>
   <Folder name="util">
-   <File path="src\binaryfile.d" />
-   <File path="src\riffwriter.d" />
+   <File path="source\binaryfile.d" />
+   <File path="source\riffwriter.d" />
   </Folder>
-  <File path="src\main.d" />
+  <File path="source\app.d" />
  </Folder>
 </DProject>
