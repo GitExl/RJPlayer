@@ -136,11 +136,11 @@ int main(string[] argv) {
         Mixer mixer = new Mixer(output);
         mixer.volume = options.volume;
         mixer.stereoSeparation = options.stereoSeparation;
-        mixer.lerp = options.linearInterpolation;
 
         SongPlayer player = new SongPlayer(mixer, song);
         player.outputCommands = false;
         player.playSubSong(options.subSong);
+        mixer.lerp = options.linearInterpolation;
 
         // Write data until either the song stops or the maximum duration elapses.
         while (player.playing && player.timeIndex < options.duration) {
@@ -163,11 +163,11 @@ int main(string[] argv) {
         Mixer mixer = new Mixer(output);
         mixer.volume = options.volume;
         mixer.stereoSeparation = options.stereoSeparation;
-        mixer.lerp = options.linearInterpolation;
 
         SongPlayer player = new SongPlayer(mixer, song);
         player.outputCommands = !options.silent;
         player.playSubSong(options.subSong);
+        mixer.lerp = options.linearInterpolation;
 
         // Play forever. CTRL+C to stop (sadly, without cleanup).
         while (player.playing) {
