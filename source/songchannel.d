@@ -144,7 +144,7 @@ public final class SongChannel {
 
             case SlideState.TO_FINAL:
                 if (slideIndex) {
-                    _eventText ~= format("VSLIDE %d FINAL", slideIndex);
+                    _eventText ~= format("VSLIDE %d FNL", slideIndex);
                 }
                 _sourceVolume = _slideVolume;
                 _targetVolume = slide.finalVolume;
@@ -237,6 +237,8 @@ public final class SongChannel {
             // vibrato sample data.
             const double vibrato = instrument.vibratoData[_vibratoSample];
             period = cast(uint)(_initialPeriod * (1.0 - vibrato));
+
+            _channel.setSampleRate(getSampleRateForPeriod(period));
         }
 
         // Update pitch slide accumulator.
@@ -244,9 +246,9 @@ public final class SongChannel {
             _pitchSlideAccumulator += _pitchSlide;
             period += cast(uint)_pitchSlideAccumulator;
             _pitchSlideDuration -= 1;
-        }
 
-        _channel.setSampleRate(getSampleRateForPeriod(period));
+            _channel.setSampleRate(getSampleRateForPeriod(period));
+        }
     }
 
     // Updates the channel volume of the current sample.
@@ -367,12 +369,12 @@ public final class SongChannel {
         if (instrumentIndex != 0 && instrumentIndex != _instrumentIndex) {
             const Instrument instrument = _song.getInstrument(instrumentIndex);
             _masterVolume = instrument.volume;
-
-            // Reset tremolo and vibrato.
-            _tremoloSample = 0;
-            _tremoloVolume = 1.0;
-            _vibratoSample = 0;
         }
+
+        // Reset tremolo and vibrato.
+        _tremoloSample = 0;
+        _tremoloVolume = 1.0;
+        _vibratoSample = 0;
 
         _instrumentIndex = instrumentIndex;
     }
