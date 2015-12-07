@@ -212,16 +212,16 @@
    <File path="source\outputsdl.d" />
    <File path="source\outputwav.d" />
   </Folder>
-  <Folder name="text">
-   <File path="source\help.d" />
-   <File path="source\license.d" />
-  </Folder>
   <Folder name="song">
    <File path="source\song.d" />
    <File path="source\songchannel.d" />
    <File path="source\songdumper.d" />
    <File path="source\songplayer.d" />
    <File path="source\songreader.d" />
+  </Folder>
+  <Folder name="text">
+   <File path="source\help.d" />
+   <File path="source\license.d" />
   </Folder>
   <Folder name="util">
    <File path="source\binaryfile.d" />

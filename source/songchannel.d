@@ -69,7 +69,7 @@ public final class SongChannel {
     private uint _instrumentIndex;
 
     // Channel volume.
-    private float _masterVolume = 0.0;
+    private double _masterVolume = 0.0;
 
     // Delay between events.
     private ubyte _speed = 6;
@@ -79,25 +79,25 @@ public final class SongChannel {
 
     // Current volume slide.
     private uint _slideIndex = 0;
-    private float _sourceVolume = 1.0;
-    private float _targetVolume = 0.0;
-    private float _slideVolume = 1.0;
+    private double _sourceVolume = 1.0;
+    private double _targetVolume = 0.0;
+    private double _slideVolume = 1.0;
     private int _slideCounter = 0;
     private ubyte _slideDuration = 0;
     private SlideState _slideState = SlideState.DONE;
 
     // Tremolo.
     private uint _tremoloSample;
-    private float _tremoloVolume = 1.0;
+    private double _tremoloVolume = 1.0;
 
     // Vibrato.
     private uint _vibratoSample;
     private uint _initialPeriod;
 
     // Pitch slide.
-    private float _pitchSlide = 0.0;
+    private double _pitchSlide = 0.0;
     private ubyte _pitchSlideDuration;
-    private float _pitchSlideAccumulator = 0.0;
+    private double _pitchSlideAccumulator = 0.0;
 
     // List of events from the last event execution.
     private string[] _eventText;
@@ -235,7 +235,7 @@ public final class SongChannel {
 
             // Calculate new pitch based on the initial note pitch and the
             // vibrato sample data.
-            const float vibrato = instrument.vibratoData[_vibratoSample];
+            const double vibrato = instrument.vibratoData[_vibratoSample];
             period = cast(uint)(_initialPeriod * (1.0 - vibrato));
         }
 
@@ -388,7 +388,7 @@ public final class SongChannel {
         }
 
         _initialPeriod = NOTE_PITCHES[note];
-        _channel.setSampleData(cast(float[])instrument.sampleData, getSampleRateForPeriod(_initialPeriod));
+        _channel.setSampleData(cast(double[])instrument.sampleData, getSampleRateForPeriod(_initialPeriod));
         if (instrument.sampleLoopLength > 2) {
             _channel.setLoop(instrument.sampleLoopStart, instrument.sampleLoopStart + instrument.sampleLoopLength);
         }

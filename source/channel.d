@@ -40,12 +40,12 @@ public enum OutputChannel : uint {
 public final class Channel {
     private OutputChannel _outputChannel;
 
-    private float[] _data;
-    private float _position = 0.0;
-    private float _step = 1.0;
+    private double[] _data;
+    private double _position = 0.0;
+    private double _step = 1.0;
     private uint _outputSampleRate;
 
-    private float _volume = 1.0;
+    private double _volume = 1.0;
 
     private uint _loopStart;
     private uint _loopEnd;
@@ -59,7 +59,7 @@ public final class Channel {
     }
 
     public float getCurrentSample() {
-        immutable float sample = _data[cast(uint)_position] * _volume;
+        immutable double sample = _data[cast(uint)_position] * _volume;
 
         // Advance sample position.
         _position += _step;
@@ -73,7 +73,7 @@ public final class Channel {
         return sample;
     }
 
-    public void setSampleData(float[] data, const uint sampleRate) {
+    public void setSampleData(double[] data, const uint sampleRate) {
         _data = data;
         _position = 0.0;
         _step = cast(float)sampleRate / _outputSampleRate;
@@ -114,15 +114,15 @@ public final class Channel {
     }
 
     public void setSampleRate(const uint sampleRate) {
-        _step = cast(float)sampleRate / _outputSampleRate;
+        _step = cast(double)sampleRate / _outputSampleRate;
     }
 
     @property
-    public void volume(const float volume) {
+    public void volume(const double volume) {
         _volume = max(0.0, min(1.0, volume));
     }
 
-    @property float volume() {
+    @property double volume() {
         return _volume;
     }
 
@@ -133,7 +133,7 @@ public final class Channel {
             return;
         }
 
-        _position = cast(float)position;
+        _position = cast(double)position;
     }
 
     @property

@@ -126,7 +126,7 @@ public final class SongReader {
                 ins.sampleData.length = ins.initialLength + ins.initialOffset;
             } else {
                 sampleFile.seek(offsetSampleData + 4);
-                ins.sampleData = byteAudioToFloat(sampleFile.readBytes(ins.initialLength + ins.initialOffset));
+                ins.sampleData = byteAudioToDouble(sampleFile.readBytes(ins.initialLength + ins.initialOffset));
             }
 
             if (offsetVibratoData + 4 > sampleFile.length) {
@@ -134,7 +134,7 @@ public final class SongReader {
                 ins.vibratoData.length = ins.vibratoLength;
             } else {
                 sampleFile.seek(offsetVibratoData + 4);
-                ins.vibratoData = byteVibratoToFloat(sampleFile.readBytes(ins.vibratoLength));
+                ins.vibratoData = byteVibratoToDouble(sampleFile.readBytes(ins.vibratoLength));
             }
 
             if (offsetTremoloData + 4 > sampleFile.length) {
@@ -142,7 +142,7 @@ public final class SongReader {
                 ins.tremoloData.length = ins.tremoloLength;
             } else {
                 sampleFile.seek(offsetTremoloData + 4);
-                ins.tremoloData = byteTremoloToFloat(sampleFile.readBytes(ins.tremoloLength));
+                ins.tremoloData = byteTremoloToDouble(sampleFile.readBytes(ins.tremoloLength));
             }
         }
 
@@ -291,18 +291,18 @@ public final class SongReader {
         return patterns;
     }
 
-    private float[] byteAudioToFloat(byte[] data) {
-        float[] output = new float[data.length];
+    private double[] byteAudioToDouble(byte[] data) {
+        double[] output = new double[data.length];
 
         for (int index; index < data.length; index++) {
-            output[index] = cast(float)data[index] * (1.0 / 128.0);
+            output[index] = cast(double)data[index] * (1.0 / 128.0);
         }
 
         return output;
     }
 
-    private float[] byteTremoloToFloat(byte[] data) {
-        float[] output = new float[data.length];
+    private double[] byteTremoloToDouble(byte[] data) {
+        double[] output = new double[data.length];
 
         for (int index; index < data.length; index++) {
             output[index] = data[index] / 128.0;
@@ -311,8 +311,8 @@ public final class SongReader {
         return output;
     }
 
-    private float[] byteVibratoToFloat(byte[] data) {
-        float[] output = new float[data.length];
+    private double[] byteVibratoToDouble(byte[] data) {
+        double[] output = new double[data.length];
 
         for (int index; index < data.length; index++) {
             output[index] = (data[index] < 0) ? data[index] / 128.0 : data[index] / 256.0;

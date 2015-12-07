@@ -42,8 +42,8 @@ public alias void delegate(Mixer mixer) MixerCallbackFunc;
 public final class Mixer {
     private AudioOutput _output;
 
-    private float _volume = 1.0;
-    private float _stereoSeparation = 1.0;
+    private double _volume = 1.0;
+    private double _stereoSeparation = 1.0;
 
     private Channel[] _channels;
 
@@ -65,7 +65,7 @@ public final class Mixer {
 
     // Sets the callback to call when an amount of time has passed. The amount of time is
     // converted to a number of samples.
-    public void setUpdateCallback(MixerCallbackFunc callback, const float interval) {
+    public void setUpdateCallback(MixerCallbackFunc callback, const double interval) {
         _callback = callback;
         _callbackInterval = cast(uint)ceil(_output.sampleRate * interval);
         writefln("Set mixer update callback at %d samples.", _callbackInterval);
@@ -97,11 +97,11 @@ public final class Mixer {
                 }
 
                 // Mix channel sample into each output channel.
-                const float sample = channel.getCurrentSample();
+                const double sample = channel.getCurrentSample();
                 for (uint outputChannel = 0; outputChannel < _output.channelCount; outputChannel++) {
 
                     // Modify sample volume with stereo separation.
-                    const float volume = (_output.channelCount == 2 && channel.outputChannel == outputChannel) ?
+                    const double volume = (_output.channelCount == 2 && channel.outputChannel == outputChannel) ?
                         1.0 - _stereoSeparation : 1.0;
                     output[bufferIndex * _output.channelCount + outputChannel] += (sample * volume) / _channels.length;
                 }
@@ -133,12 +133,12 @@ public final class Mixer {
     }
 
     @property
-    public void stereoSeparation(const float stereoSeparation) {
+    public void stereoSeparation(const double stereoSeparation) {
         _stereoSeparation = max(0.0, min(1.0, stereoSeparation));
     }
 
     @property
-    public void volume(const float volume) {
+    public void volume(const double volume) {
         _volume = max(0.0, min(1.0, volume));
     }
 }

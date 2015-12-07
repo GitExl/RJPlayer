@@ -51,7 +51,7 @@ package struct Pattern {
 package struct Command {
     CommandType type;
     ubyte parameter1;
-    float parameter2;
+    double parameter2;
 }
 
 // A sequence is a list of patterns which are to be played in order.
@@ -68,9 +68,9 @@ package struct SubSong {
 
 // Volume slides move a channel's volume between several volume levels.
 package struct VolumeSlide {
-    float initialVolume;
-    float intermediateVolume;
-    float finalVolume;
+    double initialVolume;
+    double intermediateVolume;
+    double finalVolume;
 
     ubyte toIntermediateDuration;
     ubyte toFinalDuration;
@@ -80,20 +80,20 @@ package struct VolumeSlide {
 // An instrument contains the data to produce a single sound.
 // The sound is potentially looping sample data, possibly augmented by a volume slide, vibrato and tremolo.
 package struct Instrument {
-    float volume;
+    double volume;
     uint initialOffset;
     uint initialLength;
     ushort volumeSlideIndex;
 
-    float[] sampleData;
+    double[] sampleData;
     uint sampleLoopStart;
     uint sampleLoopLength;
 
-    float[] vibratoData;
+    double[] vibratoData;
     uint vibratoLoopStart;
     uint vibratoLength;
 
-    float[] tremoloData;
+    double[] tremoloData;
     uint tremoloLoopStart;
     uint tremoloLength;
 }

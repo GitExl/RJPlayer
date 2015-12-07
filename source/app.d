@@ -56,10 +56,10 @@ struct Options {
     string inputSamples = "";
     ubyte subSong = 0;
     uint sampleRate = 44100;
-    float stereoSeparation = 1.0 / 5;
-    float volume = 1.0;
+    double stereoSeparation = 1.0 / 5;
+    double volume = 1.0;
     string wav = "";
-    float duration = float.nan;
+    double duration = float.nan;
     bool dump = false;
     bool silent = false;
 }
@@ -167,7 +167,7 @@ int main(string[] argv) {
 
         // Play forever. CTRL+C to stop (sadly, without cleanup).
         while (player.playing) {
-            if (options.duration !is float.nan && player.timeIndex >= options.duration) {
+            if (options.duration !is double.nan && player.timeIndex >= options.duration) {
                 break;
             }
             SDL_Delay(500);

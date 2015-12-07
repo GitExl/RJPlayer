@@ -47,7 +47,7 @@ public final class SongPlayer {
     private Channel[4] _channels;
 
     private bool _playing = false;
-    private float _timeIndex = 0.0;
+    private double _timeIndex = 0.0;
     private bool _outputCommands = false;
 
 
@@ -161,7 +161,7 @@ public final class SongPlayer {
     }
 
     @property
-    public float timeIndex() {
+    public double timeIndex() {
         return _timeIndex;
     }
 
