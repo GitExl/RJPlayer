@@ -185,6 +185,7 @@ private void writeHeader() {
     writefln("%s, version %d.%d.%d", NAME, VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
     writeln("Copyright (c) 2015, Dennis Meuwissen");
     writeln("All rights reserved.");
+    writeln("Special thanks to Martin Bazley for the RJP file format specifications.");
     writeln();
 }
 
