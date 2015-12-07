@@ -58,6 +58,7 @@ struct Options {
     uint sampleRate = 44100;
     double stereoSeparation = 1.0 / 5;
     double volume = 1.0;
+    bool linearInterpolation = false;
     string wav = "";
     double duration = float.nan;
     bool dump = false;
@@ -83,6 +84,7 @@ int main(string[] argv) {
         "samplerate|r",        &options.sampleRate,
         "stereo-separation",   &options.stereoSeparation,
         "volume|v",            &options.volume,
+        "lerp",                &options.linearInterpolation,
         "wav|w",               &options.wav,
         "duration|d",          &options.duration,
         "dump|d",              &options.dump,
@@ -134,6 +136,7 @@ int main(string[] argv) {
         Mixer mixer = new Mixer(output);
         mixer.volume = options.volume;
         mixer.stereoSeparation = options.stereoSeparation;
+        mixer.lerp = options.linearInterpolation;
 
         SongPlayer player = new SongPlayer(mixer, song);
         player.outputCommands = false;
@@ -160,6 +163,7 @@ int main(string[] argv) {
         Mixer mixer = new Mixer(output);
         mixer.volume = options.volume;
         mixer.stereoSeparation = options.stereoSeparation;
+        mixer.lerp = options.linearInterpolation;
 
         SongPlayer player = new SongPlayer(mixer, song);
         player.outputCommands = !options.silent;

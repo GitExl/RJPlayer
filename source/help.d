@@ -43,6 +43,8 @@ Playback
                          are between 0. and 1.0 (0 to 100%).
 -v, --volume=1.0         The master volume to play back with. Valid values are
                          between 0. and 1.0.
+--lerp                   Enables linear sample interpolation. Not correct, but
+                         it might be preferred.
 -d, --duration           The duration to play the song for, in seconds.
 
 Other

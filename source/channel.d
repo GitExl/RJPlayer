@@ -27,6 +27,7 @@ module audio.channel;
 
 import std.stdio;
 import std.algorithm;
+import std.math;
 
 import audio.mixer;
 
@@ -51,6 +52,7 @@ public final class Channel {
     private uint _loopEnd;
 
     private bool _active = false;
+    private bool _lerp = false;
 
 
     public this(const OutputChannel outputChannel, const uint outputSampleRate) {
@@ -58,8 +60,8 @@ public final class Channel {
         _outputSampleRate = outputSampleRate;
     }
 
-    public float getCurrentSample() {
-        immutable double sample = _data[cast(uint)_position] * _volume;
+    public double getCurrentSample() {
+        immutable double sample = getSample();
 
         // Advance sample position.
         _position += _step;
@@ -71,6 +73,16 @@ public final class Channel {
         }
 
         return sample;
+    }
+
+    private double getSample() {
+        if (_lerp) {
+            immutable double s1 = _data[cast(uint)floor(_position)];
+            immutable double s2 = _data[cast(uint)ceil(_position)];
+            return (s1 + (s2 - s1) * (_position - floor(_position))) * _volume;
+        }
+
+        return _data[cast(uint)_position] * _volume;
     }
 
     public void setSampleData(double[] data, const uint sampleRate) {
@@ -115,6 +127,11 @@ public final class Channel {
 
     public void setSampleRate(const uint sampleRate) {
         _step = cast(double)sampleRate / _outputSampleRate;
+    }
+
+    @property
+    public void lerp(const bool lerp) {
+        _lerp = lerp;
     }
 
     @property

@@ -132,6 +132,12 @@ public final class Mixer {
         remove(_channels, removeIndex);
     }
 
+    @property void lerp(const bool lerp) {
+        foreach (Channel channel; _channels) {
+            channel.lerp = lerp;
+        }
+    }
+
     @property
     public void stereoSeparation(const double stereoSeparation) {
         _stereoSeparation = max(0.0, min(1.0, stereoSeparation));
