@@ -47,7 +47,7 @@ import text.license;
 private immutable string NAME = "RJPlayer";
 
 private immutable ubyte VERSION_MAJOR = 1;
-private immutable ubyte VERSION_MINOR = 0;
+private immutable ubyte VERSION_MINOR = 1;
 private immutable ubyte VERSION_PATCH = 0;
 
 
