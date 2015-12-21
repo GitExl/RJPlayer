@@ -1,3 +1,13 @@
+Version 1.2.0
+-------------
+- Added: an option for playing a single sequence, so that sound effects can be played too.
+
+Version 1.1.0
+-------------
+- Added: an option for linear sample interpolation.
+- Fixed: instrument pitch slide not sustaining after a new instrument started.
+- Changed: increased floating point precision to double, for an unnoticeable difference.
+
 Version 1.0.0
 -------------
 - Initial release.
