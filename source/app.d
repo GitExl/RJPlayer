@@ -47,7 +47,7 @@ import text.license;
 private immutable string NAME = "RJPlayer";
 
 private immutable ubyte VERSION_MAJOR = 1;
-private immutable ubyte VERSION_MINOR = 1;
+private immutable ubyte VERSION_MINOR = 2;
 private immutable ubyte VERSION_PATCH = 0;
 
 
@@ -63,6 +63,7 @@ struct Options {
     double duration = float.nan;
     bool dump = false;
     bool silent = false;
+    int sequence = -1;
 }
 
 
@@ -88,7 +89,8 @@ int main(string[] argv) {
         "wav|w",               &options.wav,
         "duration|d",          &options.duration,
         "dump|d",              &options.dump,
-        "silent",              &options.silent
+        "silent",              &options.silent,
+        "sequence|q",          &options.sequence
     );
 
     // Validate basic input.
@@ -124,7 +126,11 @@ int main(string[] argv) {
 
     // Write WAV file.
     } else if (options.wav != "") {
-        writefln("Writing subsong %d to %s for %.1f seconds.", options.subSong, options.wav, options.duration);
+        if (options.sequence > -1) {
+            writefln("Writing sequence %d to %s for %.1f seconds.", options.sequence, options.wav, options.duration);
+        } else {
+            writefln("Writing subsong %d to %s for %.1f seconds.", options.subSong, options.wav, options.duration);
+        }
 
         if (options.duration is float.nan) {
             writefln("No duration specified.");
@@ -139,7 +145,11 @@ int main(string[] argv) {
 
         SongPlayer player = new SongPlayer(mixer, song);
         player.outputCommands = false;
-        player.playSubSong(options.subSong);
+        if (options.sequence > -1) {
+            player.playSequence(options.sequence);
+        } else {
+            player.playSubSong(options.subSong);
+        }
         mixer.lerp = options.linearInterpolation;
 
         // Write data until either the song stops or the maximum duration elapses.
@@ -153,7 +163,12 @@ int main(string[] argv) {
     } else {
         DerelictSDL2.load();
 
-        writefln("Playing subsong %d. Press Ctrl+C to quit.", options.subSong);
+        if (options.sequence > -1) {
+            writefln("Playing sequence %d. Press Ctrl+C to quit.", options.sequence);
+        } else {
+            writefln("Playing subsong %d. Press Ctrl+C to quit.", options.subSong);
+        }
+
         if (options.duration !is float.nan) {
             writefln("Stopping playback after %.1f seconds.", options.duration);
         }
@@ -166,7 +181,11 @@ int main(string[] argv) {
 
         SongPlayer player = new SongPlayer(mixer, song);
         player.outputCommands = !options.silent;
-        player.playSubSong(options.subSong);
+        if (options.sequence > -1) {
+            player.playSequence(options.sequence);
+        } else {
+            player.playSubSong(options.subSong);
+        }
         mixer.lerp = options.linearInterpolation;
 
         // Play forever. CTRL+C to stop (sadly, without cleanup).

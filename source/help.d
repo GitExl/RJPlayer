@@ -36,6 +36,7 @@ Song
 --song=filename     The filename of the song to load.
 --samples=filename  The filename containing the song's sample data.
 -s, --subsong=0     The subsong index to play.
+-q, --sequence=0    If not playing a subsong, will play just this sequence.
 
 Playback
 -r, --samplerate=44100   The samplerate to play at.

@@ -105,6 +105,22 @@ public final class SongPlayer {
         _playing = true;
     }
 
+    public void playSequence(const uint sequence) {
+        if (sequence >= _song.getSequences().length) {
+            throw new Exception(format("Invalid sequence index %d.", sequence));
+        }
+
+        if (_outputCommands) {
+            writeln("+-------+----------------+----------------+----------------+----------------+");
+        }
+
+        stop();
+
+        _songChannels[3].setSequence(sequence);
+
+        _playing = true;
+    }
+
     public void stop() {
         foreach (Channel channel; _channels) {
             channel.stop();
