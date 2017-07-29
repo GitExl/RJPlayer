@@ -27,7 +27,8 @@ import std.stdio;
 import std.conv;
 import std.getopt;
 import std.file;
-import std.c.stdlib;
+
+import core.sys.posix.stdlib;
 
 import derelict.sdl2.sdl;
 
